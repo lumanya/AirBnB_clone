@@ -7,6 +7,8 @@ import os
 import unittest
 import pycodestyle
 from models import base_model
+from datetime import datetime
+
 
 class TestBaseModelDocs(unittest.TestCase):
     """
@@ -91,6 +93,16 @@ class TestBaseModelInstances(unittest.TestCase):
         self.model.save()
         self.assertNotEqual(original_updated_at, self.model.updated_at,
                             "save method didnt update updated_at")
+
+    def test_attributes_instatied(self):
+        """ Test if attributes are propery instatieted in BaseModel """
+        self.assertTrue(hasattr(self.model, "id"))
+        self.assertTrue(hasattr(self.model, "created_at"))
+        self.assertTrue(hasattr(self.model, "updated_at"))
+
+        self.assertEqual(type(self.model.id), str)
+        self.assertEqual(type(self.model.created_at), datetime)
+        self.assertEqual(type(self.model.updated_at), datetime)
 
 if __name__ == '__main__':
     unittest.main()
