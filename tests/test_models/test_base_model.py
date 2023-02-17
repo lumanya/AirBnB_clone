@@ -60,5 +60,13 @@ class TestBaseModelInstances(unittest.TestCase):
         """ check if BaseModel is properly instatied """
         self.assertIsInstance(self.model, base_model.BaseModel)
 
+    def test_str(self):
+        """ test for __str__ method if it returns
+        [<class name>] (<self.id>) <self.__dict__>
+        """
+        expected_str = "[BaseModel] ({}) {}".format(self.model.id,
+                                                    self.model.__dict__)
+        self.assertEqual(expected_str, str(self.model))
+
 if __name__ == '__main__':
     unittest.main()
