@@ -68,5 +68,17 @@ class TestBaseModelInstances(unittest.TestCase):
                                                     self.model.__dict__)
         self.assertEqual(expected_str, str(self.model))
 
+    def test_to_dict(self):
+        """ test to to_dict if it returns dictionary that contains
+        id, created_at, updated_at and __class__
+        """
+        base_dict = self.model.to_dict()
+
+        self.assertTrue(isinstance(base_dict, dict))
+        self.assertTrue('id' in base_dict)
+        self.assertTrue('created_at' in base_dict)
+        self.assertTrue('updated_at' in base_dict)
+        self.assertEqual(base_dict['__class__'], 'BaseModel')
+
 if __name__ == '__main__':
     unittest.main()
