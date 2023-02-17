@@ -3,6 +3,7 @@
 Unit test for BaseModel class
 """
 
+import os
 import unittest
 import pycodestyle
 from models import base_model
@@ -37,6 +38,17 @@ class TestBaseModelDocs(unittest.TestCase):
         style = pycodestyle.StyleGuide(quite=True)
         result = style.check_files(['models/base_model.py'])
         self.assertEqual(result.total_errors, 0, result.messages)
+
+    def test_file_is_executable(self):
+        """ test if the file is exceutable  using os.access() function with
+        the os.X_OK flag.
+        `chmod +x my_script.py`
+        that command set the execute bit on the file, so when check if a file
+        is excutable wwe are essentially checking if the exceute bit is set on
+        the file
+        """
+        filename="models/base_model.py"
+        self.assertTrue(os.access(filename, os.X_OK))
 
 if __name__ == '__main__':
     unittest.main()
