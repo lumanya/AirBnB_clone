@@ -12,7 +12,7 @@ class FileStorage:
     """
      FileStorage
     """
-    __file_path = "/home/shaibu/Desktop/AirBnB_clone/file.json"
+    __file_path = "./file.json"
     __objects = {}
 
     def all(self):
