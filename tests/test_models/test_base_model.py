@@ -50,5 +50,15 @@ class TestBaseModelDocs(unittest.TestCase):
         filename="models/base_model.py"
         self.assertTrue(os.access(filename, os.X_OK))
 
+class TestBaseModelInstances(unittest.TestCase):
+    """ testing for class instances """
+    def setUp(self):
+        """ initilizes new BaseModel instance for testing """
+        self.model = base_model.BaseModel()
+
+    def test_instation(self):
+        """ check if BaseModel is properly instatied """
+        self.assertIsInstance(self.model, base_model.BaseModel)
+
 if __name__ == '__main__':
     unittest.main()
