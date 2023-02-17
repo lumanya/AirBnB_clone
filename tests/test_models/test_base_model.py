@@ -80,5 +80,10 @@ class TestBaseModelInstances(unittest.TestCase):
         self.assertTrue('updated_at' in base_dict)
         self.assertEqual(base_dict['__class__'], 'BaseModel')
 
+        self.assertTrue(isinstance(base_dict['updated_at'], str),
+                        "updated_at attr is not string")
+        self.assertTrue(isinstance(base_dict['created_at'], str),
+                        "created_at attribute is notstring")
+
 if __name__ == '__main__':
     unittest.main()
