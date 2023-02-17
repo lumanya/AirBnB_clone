@@ -36,7 +36,7 @@ class TestBaseModelDocs(unittest.TestCase):
         """ Test that bas_model.py conforms to PEP8. """
         style = pycodestyle.StyleGuide(quite=True)
         result = style.check_files(['models/base_model.py'])
-        self.assertEqual(result.total_errors, 0, "found code style errors and (warning)")
+        self.assertEqual(result.total_errors, 0, result.messages)
 
 if __name__ == '__main__':
     unittest.main()
