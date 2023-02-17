@@ -85,5 +85,12 @@ class TestBaseModelInstances(unittest.TestCase):
         self.assertTrue(isinstance(base_dict['created_at'], str),
                         "created_at attribute is notstring")
 
+    def test_save_method_updates_updated_at_attributes(self):
+        """ test on save method if it update updated_at attributes """
+        original_updated_at = self.model.updated_at
+        self.model.save()
+        self.assertNotEqual(original_updated_at, self.model.updated_at,
+                            "save method didnt update updated_at")
+
 if __name__ == '__main__':
     unittest.main()
