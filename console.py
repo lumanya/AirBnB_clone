@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+ console module contains the entry point of the command interpreter
+"""
+
 import cmd
 
 
