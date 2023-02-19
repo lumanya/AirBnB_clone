@@ -121,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
         if len(arg) < 3:
             print("** attribute name missing **")
             return
-        if len(arg)  < 4:
+        if len(arg) < 4:
             print("** value missing **")
             return
         obj = objs[key]
