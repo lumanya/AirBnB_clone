@@ -5,6 +5,7 @@
 
 import cmd
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 
 
@@ -34,13 +35,13 @@ class HBNBCommand(cmd.Cmd):
         if cls == "":
             print("** class name missing **")
             return
-        if cls not in ['BaseModel']:
-            print("** class doesn't exist **")
-            return
-        if cls == 'BaseModel':
-            self.new_obj = BaseModel()
-            self.new_obj.save()
-            print(self.new_obj.id)
+        else:
+            try:
+                obj = eval(cls)()
+                obj.save()
+                print(obj.id)
+            except NameError:
+                print("** class doesn't exists **")
 
     def do_show(self, arg):
         """Prints the string representation of an instance based on the class
@@ -49,7 +50,7 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        elif args[0] not in ['BaseModel']:
+        elif args[0] not in ['BaseModel', 'User']:
             print("** class doesn't exist **")
             return
         elif len(args) < 2:
@@ -72,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
             return
         else:
             args_list = args.split()
-            if args_list[0] not in ['BaseModel']:
+            if args_list[0] not in ['BaseModel', 'User']:
                 print("** class doesn't exists **")
                 return
             else:
@@ -86,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         arg_list = arg.split()
-        if arg_list[0] not in ['BaseModel']:
+        if arg_list[0] not in ['BaseModel', 'User']:
             print("** class doesn't exist **")
             return
         if len(arg_list) < 2:
@@ -107,7 +108,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         arg = args.split()
-        if arg[0] not in ['BaseModel']:
+        if arg[0] not in ['BaseModel', 'User']:
             print("** class doesn't exist **")
             return
         if len(arg) < 2:
