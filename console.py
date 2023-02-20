@@ -7,6 +7,11 @@ import cmd
 from models.base_model import BaseModel
 from models.user import User
 from models import storage
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -14,6 +19,16 @@ class HBNBCommand(cmd.Cmd):
     Command interpreter for HBNB
     """
     prompt = '(hbnb) '
+
+    all_classes = [
+        'BaseModel',
+        'User',
+        'State',
+        'City',
+        'Place',
+        'Review',
+        'Amenity'
+    ]
 
     def do_quit(self, arg):
         'Quit command to exit the program\n'
@@ -50,7 +65,7 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        elif args[0] not in ['BaseModel', 'User']:
+        elif args[0] not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
             return
         elif len(args) < 2:
@@ -73,7 +88,7 @@ class HBNBCommand(cmd.Cmd):
             return
         else:
             args_list = args.split()
-            if args_list[0] not in ['BaseModel', 'User']:
+            if args_list[0] not in HBNBCommand.all_classes:
                 print("** class doesn't exists **")
                 return
             else:
@@ -87,7 +102,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         arg_list = arg.split()
-        if arg_list[0] not in ['BaseModel', 'User']:
+        if arg_list[0] not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
             return
         if len(arg_list) < 2:
@@ -108,7 +123,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         arg = args.split()
-        if arg[0] not in ['BaseModel', 'User']:
+        if arg[0] not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
             return
         if len(arg) < 2:
