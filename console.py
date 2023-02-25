@@ -29,6 +29,7 @@ class HBNBCommand(cmd.Cmd):
         'Review',
         'Amenity'
     ]
+    attr = ['created_at', 'id', 'updated_at']
 
     def do_quit(self, arg):
         'Quit command to exit the program\n'
@@ -142,12 +143,15 @@ class HBNBCommand(cmd.Cmd):
             return
         obj = objs[key]
         attr_name = arg[2]
-        attr_val = arg[3]
+        attr_val = arg[3].strip('"')
+
         attr_type = type(getattr(obj, attr_name, None))
         try:
             attr_val = attr_type(attr_val)
         except (ValueError, TypeError):
             pass
+        if attr_val.isdigit():
+            attr_val = int(attr_val)
         setattr(obj, attr_name, attr_val)
         obj.save()
 
