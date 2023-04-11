@@ -46,7 +46,11 @@ class HBNBCommand(cmd.Cmd):
         pass
     def precmd(self, line):
         """Intercepts commands to test for class.syntax() and class.all()"""
-        match = re.search(r"^(\w*)\.(all)\(\)$", line)
+        match = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", line)
+        
+        if not match:
+            return line
+        
         if match:
             classname = match.group(1)
             method = match.group(2)
@@ -57,8 +61,8 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print("** class doesn't exist **")
                 return ""
-        else:
-            return line
+        
+        
 
     def do_create(self, line):
         '''
@@ -75,25 +79,7 @@ class HBNBCommand(cmd.Cmd):
                 print(obj.id)
             except NameError:
                 print("** class doesn't exist **")
-
-    def do_show(self, line):
-        """Prints the string representation of an instance based on the class
-        name and id."""
-        words = line.split()
-        if line == "" or line is None:
-            print("** class name missing **")
-            return
-        elif words[0] not in HBNBCommand.all_classes:
-            print("** class doesn't exist **")
-            return
-        elif len(words) < 2:
-            print("** instance id missing **")
-        objs = storage.all()
-        key = words[0] + '.' + words[1]
-        if key not in objs:
-            print("** no instance found **")
-            return
-        print(objs[key])
+   
 
     def do_all(self, line):
         """Prints all string representation of all instances.
@@ -164,6 +150,19 @@ class HBNBCommand(cmd.Cmd):
             new_list = [str(obj) for key, obj in storage.all().items()]
             print(new_list)
        
+    def do_count(self, line):
+        """ Retrieve the number of instances of a class <class>.count()"""
+        if line == "" or line is None:
+            print("** class name missing **")
+            return
+        words = line.split()
+        if words[0] not in HBNBCommand.all_classes:
+            print("** class doesn't exist **")
+            return 
+        objs = [str(obj) for key, obj in storage.all().items()
+                      if type(obj).__name__ == words[0]]
+        print(len(objs))
+
        
 
     def do_destroy(self, line):
