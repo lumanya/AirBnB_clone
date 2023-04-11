@@ -14,6 +14,7 @@ from models.amenity import Amenity
 from models.review import Review
 import re
 import json
+import datetime
 
 
 class HBNBCommand(cmd.Cmd):
@@ -44,6 +45,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Do nothing on empty input line"""
         pass
+    
     def precmd(self, line):
         """Intercepts commands to test for class.syntax()"""
         # print("PRECMD:::", line)
@@ -113,24 +115,9 @@ class HBNBCommand(cmd.Cmd):
                 obj.save()
                 print(obj.id)
             except NameError:
-                print("** class doesn't exist **")
+                print("** class doesn't exist **") 
+
    
-
-    def do_all(self, line):
-        """Prints all string representation of all instances.
-        """
-        if line != "":
-            words = line.split(' ')
-            if words[0] not in storage.classes():
-                print("** class doesn't exist **")
-            else:
-                nl = [str(obj) for key, obj in storage.all().items()
-                      if type(obj).__name__ == words[0]]
-                print(nl)
-        else:
-            new_list = [str(obj) for key, obj in storage.all().items()]
-            print(new_list)
-
    
     def do_create(self, line):
         '''
@@ -225,45 +212,55 @@ class HBNBCommand(cmd.Cmd):
             del storage.all()[key]
             storage.save()
 
-    def do_update(self, args):
-        """ update an instance based on the class name and id by adding
-        or updating attribute (save the chnage into JSON file)
+
+    def do_update(self, line):
+        """Updates an instance by adding or updating attribute.
         """
-        if not args:
+        if line == "" or line is None:
             print("** class name missing **")
             return
-        arg = args.split()
-        if arg[0] not in HBNBCommand.all_classes:
+
+        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
+        match = re.search(rex, line)
+        classname = match.group(1)
+        uid = match.group(2)
+        attribute = match.group(3)
+        value = match.group(4)
+        if not match:
+            print("** class name missing **")
+        elif classname not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
-            return
-        if len(arg) < 2:
+        elif uid is None:
             print("** instance id missing **")
-            return
-        objs = storage.all()
-        key = arg[0] + '.' + arg[1]
-        if key not in objs:
-            print("** no instance found **")
-            return
-        if len(arg) < 3:
-            print("** attribute name missing **")
-            return
-        if len(arg) < 4:
-            print("** value missing **")
-            return
-        obj = objs[key]
-        attr_name = arg[2]
-        attr_val = arg[3].strip('"')
-
-        attr_type = type(getattr(obj, attr_name, None))
-        try:
-            attr_val = attr_type(attr_val)
-        except (ValueError, TypeError):
-            pass
-        if attr_val.isdigit():
-            attr_val = int(attr_val)
-        setattr(obj, attr_name, attr_val)
-        obj.save()
-
+        else:
+            key = "{}.{}".format(classname, uid)
+            if key not in storage.all():
+                print("** no instance found **")
+            elif not attribute:
+                print("** attribute name missing **")
+            elif not value:
+                print("** value missing **")
+            else:
+                cast = None
+                if not re.search('^".*"$', value):
+                    if '.' in value:
+                        cast = float
+                    else:
+                        cast = int
+                else:
+                    value = value.replace('"', '')
+                attributes = storage.attributes()[classname]
+                if attribute in attributes:
+                    value = attributes[attribute](value)
+                elif cast:
+                    try:
+                        value = cast(value)
+                    except ValueError:
+                        pass  # fine, stay a string then
+                setattr(storage.all()[key], attribute, value)
+                storage.all()[key].save()
+        
+     
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
