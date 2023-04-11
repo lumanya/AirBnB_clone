@@ -13,6 +13,7 @@ from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 import re
+import json
 
 
 class HBNBCommand(cmd.Cmd):
@@ -44,50 +45,102 @@ class HBNBCommand(cmd.Cmd):
         """Do nothing on empty input line"""
         pass
     def precmd(self, line):
-        """ Intercepts comnads to tes for class.syntax()"""
+        """Intercepts commands to test for class.syntax() and class.all()"""
         match = re.search(r"^(\w*)\.(all)\(\)$", line)
         if match:
             classname = match.group(1)
             method = match.group(2)
             if classname in HBNBCommand.all_classes:
-                command = method + " " + classname
-                self.onecmd(command)
-                return ""
+                command = method + " " + classname              
+                self.onecmd(command)                
+                return command
             else:
                 print("** class doesn't exist **")
                 return ""
+        else:
+            return line
 
-    def do_create(self, cls):
+    def do_create(self, line):
         '''
         Creates a new instance of BaseModel and save it it to JSON file and
         print id
         '''
-        if cls == "":
+        if line == "" or line is None:
             print("** class name missing **")
             return
         else:
             try:
-                obj = eval(cls)()
+                obj = eval(line)()
                 obj.save()
                 print(obj.id)
             except NameError:
                 print("** class doesn't exist **")
 
-    def do_show(self, arg):
+    def do_show(self, line):
         """Prints the string representation of an instance based on the class
         name and id."""
-        args = arg.split()
-        if not arg:
+        words = line.split()
+        if line == "" or line is None:
             print("** class name missing **")
             return
-        elif args[0] not in HBNBCommand.all_classes:
+        elif words[0] not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
             return
-        elif len(args) < 2:
+        elif len(words) < 2:
             print("** instance id missing **")
-            return
         objs = storage.all()
-        key = args[0] + '.' + args[1]
+        key = words[0] + '.' + words[1]
+        if key not in objs:
+            print("** no instance found **")
+            return
+        print(objs[key])
+
+    def do_all(self, line):
+        """Prints all string representation of all instances.
+        """
+        if line != "":
+            words = line.split(' ')
+            if words[0] not in storage.classes():
+                print("** class doesn't exist **")
+            else:
+                nl = [str(obj) for key, obj in storage.all().items()
+                      if type(obj).__name__ == words[0]]
+                print(nl)
+        else:
+            new_list = [str(obj) for key, obj in storage.all().items()]
+            print(new_list)
+
+   
+    def do_create(self, line):
+        '''
+        Creates a new instance of BaseModel and save it it to JSON file and
+        print id
+        '''
+        if line == "" or line is None:
+            print("** class name missing **")
+            return
+        else:
+            try:
+                obj = eval(line)()
+                obj.save()
+                print(obj.id)
+            except NameError:
+                print("** class doesn't exist **")
+
+    def do_show(self, line):
+        """Prints the string representation of an instance based on the class
+        name and id."""
+        words = line.split()
+        if line == "" or line is None:
+            print("** class name missing **")
+            return
+        elif words[0] not in HBNBCommand.all_classes:
+            print("** class doesn't exist **")
+            return
+        elif len(words) < 2:
+            print("** instance id missing **")        
+        objs = storage.all()
+        key = words[0] + '.' + words[1]
         if key not in objs:
             print("** no instance found **")
             return
@@ -113,21 +166,21 @@ class HBNBCommand(cmd.Cmd):
        
        
 
-    def do_destroy(self, arg):
+    def do_destroy(self, line):
         """ Deletes an instance based on the class name and id
         (save the change into the Json file
         """
-        if not arg:
+        if line == "" or line is None:
             print("** class name missing **")
             return
-        arg_list = arg.split()
-        if arg_list[0] not in HBNBCommand.all_classes:
+        words = line.split()
+        if words[0] not in HBNBCommand.all_classes:
             print("** class doesn't exist **")
             return
-        if len(arg_list) < 2:
+        if len(words) < 2:
             print("** instance id missing **")
             return
-        key = arg_list[0] + '.' + arg_list[1]
+        key = words[0] + '.' + words[1]
         if key not in storage.all():
             print("** no instance found **")
             return
