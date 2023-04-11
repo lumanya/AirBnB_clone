@@ -57,7 +57,7 @@ class HBNBCommand(cmd.Cmd):
                 obj.save()
                 print(obj.id)
             except NameError:
-                print("** class doesn't exists **")
+                print("** class doesn't exist **")
 
     def do_show(self, arg):
         """Prints the string representation of an instance based on the class
@@ -90,7 +90,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             args_list = args.split()
             if args_list[0] not in HBNBCommand.all_classes:
-                print("** class doesn't exists **")
+                print("** class doesn't exist **")
                 return
             else:
                 print([str(obj) for obj in storage.all().values()])
@@ -109,14 +109,13 @@ class HBNBCommand(cmd.Cmd):
         if len(arg_list) < 2:
             print("** instance id missing **")
             return
-        objs = storage.all()
         key = arg_list[0] + '.' + arg_list[1]
-        if key not in objs:
+        if key not in storage.all():
             print("** no instance found **")
             return
         else:
-            del objs[key]
-            objs.save()
+            del storage.all()[key]
+            storage.save()
 
     def do_update(self, args):
         """ update an instance based on the class name and id by adding
