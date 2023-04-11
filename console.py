@@ -12,6 +12,7 @@ from models.city import City
 from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
+import re
 
 
 class HBNBCommand(cmd.Cmd):
@@ -42,6 +43,19 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Do nothing on empty input line"""
         pass
+    def precmd(self, line):
+        """ Intercepts comnads to tes for class.syntax()"""
+        match = re.search(r"^(\w*)\.(all)\(\)$", line)
+        if match:
+            classname = match.group(1)
+            method = match.group(2)
+            if classname in HBNBCommand.all_classes:
+                command = method + " " + classname
+                self.onecmd(command)
+                return ""
+            else:
+                print("** class doesn't exist **")
+                return ""
 
     def do_create(self, cls):
         '''
@@ -79,21 +93,25 @@ class HBNBCommand(cmd.Cmd):
             return
         print(objs[key])
 
-    def do_all(self, args):
+    def do_all(self, line):
         """
         prints all string repersenation of all instances based or not on the
         class name. Ex all BaseModel or all .
         """
-        if not args:
-            print([str(obj) for obj in storage.all().values()])
-            return
-        else:
-            args_list = args.split()
-            if args_list[0] not in HBNBCommand.all_classes:
+        
+        if line != "":
+            words = line.split(' ')
+            if words[0] not in HBNBCommand.all_classes:
                 print("** class doesn't exist **")
-                return
             else:
-                print([str(obj) for obj in storage.all().values()])
+                nl = [str(obj) for key, obj in storage.all().items()
+                      if type(obj).__name__ == words[0]]
+                print(nl)
+        else:
+            new_list = [str(obj) for key, obj in storage.all().items()]
+            print(new_list)
+       
+       
 
     def do_destroy(self, arg):
         """ Deletes an instance based on the class name and id
