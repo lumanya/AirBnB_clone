@@ -114,7 +114,9 @@ class HBNBCommand(cmd.Cmd):
         if key not in objs:
             print("** no instance found **")
             return
-        del objs[key]
+        else:
+            del objs[key]
+            objs.save()
 
     def do_update(self, args):
         """ update an instance based on the class name and id by adding
